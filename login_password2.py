@@ -147,12 +147,13 @@ class Project:
         self.update_in_database(new_login,new_password)
         print("Your login and password successfully updated!")
 
-
     def log_out(self):
         self.enterance()
 
     def delete_profile(self):
-        pass
+        mycursor.execute(f"delete from login_pasword where login='{self.login}'")
+        my_db.commit()
+        print("Your profile has been deleted!")
 
     @staticmethod
     def first_msg():
