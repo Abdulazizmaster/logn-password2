@@ -8,6 +8,9 @@ my_db = mysql.connector.connect(
     database='login_password2'
 )
 mycursor = my_db.cursor()
+# mycursor.execute("select password from login_pasword where login='dado12'")
+# all = mycursor.fetchall()
+# print(all)
 
 
 class Project:
@@ -96,6 +99,15 @@ class Project:
                 self.log_in()
                 break
 
+        password = input("Input your password: ").strip()
+        while not password.isalnum() or self.is_empty(password) or self.is_correct_password(login,password):
+            self.clear_everything()
+            print("""Invalid input. Possible errors:
+                                    -> input doesn't consists of only letters and numbers
+                                    -> input an empty
+                                    -> uncorrect password""")
+            password = input("Input your password: ").strip()
+
         self.second_msg()
         options3 = ['1','2','3']
         new_msg = input(">>> ").strip()
@@ -155,6 +167,27 @@ class Project:
             if login == i[0]:
                 return True
         return False
+
+    @staticmethod
+    def is_correct_password(login,password):
+        mycursor.execute("select login from login_pasword")
+        logins = mycursor.fetchall()
+        mycursor.execute("select password from login_pasword")
+        passwords = mycursor.fetchall()
+        log = ""
+        passw = ""
+        for i in logins:
+            if login == i[0]:
+                log = i[0]
+        for i in passwords:
+            if password == i[0]:
+               passw = i[0]
+
+        mycursor.execute(f"select password from login_pasword where login='{log}'")
+        passw2 = mycursor.fetchall()
+        if passw == passw2[0][0]:
+            return False
+        return True
 
 
 person = Project()
