@@ -1,5 +1,7 @@
 import mysql.connector
 import os
+import sys
+import getpass
 
 my_db = mysql.connector.connect(
     host='localhost',
@@ -8,9 +10,6 @@ my_db = mysql.connector.connect(
     database='login_password2'
 )
 mycursor = my_db.cursor()
-# mycursor.execute("select password from login_pasword where login='dado12'")
-# all = mycursor.fetchall()
-# print(all)
 
 
 class Project:
@@ -27,7 +26,7 @@ class Project:
         options = ['1','2']
         while enter_ not in options:
             self.clear_everything()
-            print("Invalid input. You can only enter [1,2,3,4]")
+            print("Invalid input. You can only enter [1,2]")
             enter_ = input(">>> ").strip()
 
         if enter_ == options[0]:
@@ -63,23 +62,34 @@ class Project:
                     -> this login is already taken""")
             us_login = input("Enter your login [nickname]: ").strip().lower()
 
-        us_password = input("Enter your password: ").strip()
+        us_password = getpass.getpass("Enter your password: ").strip()
         while not us_password.isalnum() or self.is_empty(us_password):
             self.clear_everything()
             print("""Invalid input. Possible errors: 
                     -> input doesn't consists of only letters and numbers
                     -> input an empty""")
-            us_password = input("Enter your password: ").strip()
+            us_password = getpass.getpass("Enter your password: ").strip()
 
         self.name = us_name
         self.age = us_age
         self.login = us_login
         self.password = us_password
         self.save_to_database()
-        self.enterance()
+        self.third_msg()
+        choice = input(">>> ").strip()
+        options4 = ['1','2']
+        while choice not in options4:
+            self.clear_everything()
+            print("You can only input [1,2]")
+            choice = input(">>> ").strip()
+        if choice == options4[0]:
+            self.log_in()
+        else:
+            sys.exit()
 
     def log_in(self):
         self.clear_everything()
+        print("\t\tLog in part\n")
         login = input("Input your login: ").strip().lower()
         while not login.isalnum() or self.is_empty(login) or not self.is_exists_in_database(login):
             self.clear_everything()
@@ -97,16 +107,16 @@ class Project:
                 self.register()
             else:
                 self.log_in()
-                break
+                sys.exit(0)
 
-        password = input("Input your password: ").strip()
+        password = getpass.getpass("Input your password: ").strip()
         while not password.isalnum() or self.is_empty(password) or self.is_correct_password(login,password):
             self.clear_everything()
             print("""Invalid input. Possible errors:
                     -> input doesn't consists of only letters and numbers
                     -> input an empty
                     -> uncorrect password""")
-            password = input("Input your password: ").strip()
+            password = getpass.getpass("Input your password: ").strip()
 
         self.login = login
         self.password = password
@@ -136,13 +146,13 @@ class Project:
                     -> this login is already taken""")
             new_login = input("Input your new login: ").strip().lower()
 
-        new_password = input("Input your new password: ").strip()
+        new_password = getpass.getpass("Input your new password: ").strip()
         while not new_password.isalnum() or self.is_empty(new_password):
             self.clear_everything()
             print("""Invalid input. Possible errors: 
                     -> input doesn't consists of only letters and numbers
                     -> input an empty""")
-            new_password = input("Input your new password: ").strip()
+            new_password = getpass.getpass("Input your new password: ").strip()
 
         self.update_in_database(new_login,new_password)
         print("Your login and password successfully updated!")
@@ -217,6 +227,15 @@ class Project:
     def update_in_database(self,login,password):
         mycursor.execute(f"update login_pasword set login='{login}', password='{password}' where login='{self.login}'")
         my_db.commit()
+
+
+    def third_msg(self):
+        self.clear_everything()
+        print("""You've registered successfully
+             
+        What do you want to do?
+             [1] -> Log in
+             [2] -> Quit""")
 
 
 person = Project()
