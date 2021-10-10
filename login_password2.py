@@ -42,33 +42,33 @@ class Project:
         while not us_name.isalpha() or self.is_empty(us_name):
             self.clear_everything()
             print("""Invalid input. Possible errors: 
-            -> input doesn't consists of only letters
-            -> input an empty""")
+                    -> input doesn't consists of only letters
+                    -> input an empty""")
             us_name = input("Enter your name: ").strip().capitalize()
 
         us_age = input("Enter your age: ").strip()
         while not us_age.isnumeric() or self.is_empty(us_age):
             self.clear_everything()
             print("""Invalid input. Possible errors: 
-                        -> input doesn't consists of only numbers
-                        -> input an empty""")
+                    -> input doesn't consists of only numbers
+                    -> input an empty""")
             us_age = input("Enter your age: ").strip()
 
         us_login = input("Enter your login [nickname]: ").strip().lower()
         while not us_login.isalnum() or self.is_empty(us_login) or self.is_exists_in_database(us_login):
             self.clear_everything()
             print("""Invalid input. Possible errors: 
-                        -> input doesn't consists of only letters and numbers
-                        -> input an empty
-                        -> this login is already taken""")
+                    -> input doesn't consists of only letters and numbers
+                    -> input an empty
+                    -> this login is already taken""")
             us_login = input("Enter your login [nickname]: ").strip().lower()
 
         us_password = input("Enter your password: ").strip()
         while not us_password.isalnum() or self.is_empty(us_password):
             self.clear_everything()
             print("""Invalid input. Possible errors: 
-                        -> input doesn't consists of only letters and numbers
-                        -> input an empty""")
+                    -> input doesn't consists of only letters and numbers
+                    -> input an empty""")
             us_password = input("Enter your password: ").strip()
 
         self.name = us_name
@@ -84,8 +84,8 @@ class Project:
         while not login.isalnum() or self.is_empty(login) or not self.is_exists_in_database(login):
             self.clear_everything()
             print("""Invalid input. Possible errors:
-                        -> input doesn't consists of only letters and numbers
-                        -> input an empty""")
+                    -> input doesn't consists of only letters and numbers
+                    -> input an empty""")
             print("Maybe you haven't registered yet. Do you wanna register? ")
             y_or_n = input(">>> ").strip().lower()
             options2 = ['y', 'n', 'yes', 'no']
@@ -103,11 +103,15 @@ class Project:
         while not password.isalnum() or self.is_empty(password) or self.is_correct_password(login,password):
             self.clear_everything()
             print("""Invalid input. Possible errors:
-                                    -> input doesn't consists of only letters and numbers
-                                    -> input an empty
-                                    -> uncorrect password""")
+                    -> input doesn't consists of only letters and numbers
+                    -> input an empty
+                    -> uncorrect password""")
             password = input("Input your password: ").strip()
 
+        self.login = login
+        self.password = password
+
+        self.clear_everything()
         self.second_msg()
         options3 = ['1','2','3']
         new_msg = input(">>> ").strip()
@@ -123,7 +127,26 @@ class Project:
             self.delete_profile()
 
     def update_login_password(self):
-        pass
+        new_login = input("Input your new login: ").strip().lower()
+        while not new_login.isalnum() or self.is_empty(new_login) or self.is_exists_in_database(new_login):
+            self.clear_everything()
+            print("""Invalid input. Possible errors: 
+                    -> input doesn't consists of only letters and numbers
+                    -> input an emptyself.login
+                    -> this login is already taken""")
+            new_login = input("Input your new login: ").strip().lower()
+
+        new_password = input("Input your new password: ").strip()
+        while not new_password.isalnum() or self.is_empty(new_password):
+            self.clear_everything()
+            print("""Invalid input. Possible errors: 
+                    -> input doesn't consists of only letters and numbers
+                    -> input an empty""")
+            new_password = input("Input your new password: ").strip()
+
+        self.update_in_database(new_login,new_password)
+        print("Your login and password successfully updated!")
+
 
     def log_out(self):
         self.enterance()
@@ -143,9 +166,10 @@ class Project:
     @staticmethod
     def second_msg():
         print("""You've successfully logged in!
-                  Menu: -> [1] Update login and password
-                        -> [2] Log out
-                        -> [3] Delete profile""")
+        
+          Menu: -> [1] Update login and password
+                -> [2] Log out
+                -> [3] Delete profile""")
 
     @staticmethod
     def clear_everything():
@@ -188,6 +212,10 @@ class Project:
         if passw == passw2[0][0]:
             return False
         return True
+
+    def update_in_database(self,login,password):
+        mycursor.execute(f"update login_pasword set login='{login}', password='{password}' where login='{self.login}'")
+        my_db.commit()
 
 
 person = Project()
