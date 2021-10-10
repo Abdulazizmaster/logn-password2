@@ -18,6 +18,7 @@ class Project:
         self.password = None
 
     def enterance(self):
+        self.clear_everything()
         self.first_msg()
         enter_ = input(">>> ").strip()
         options = ['1','2']
@@ -29,9 +30,11 @@ class Project:
         if enter_ == options[0]:
             self.register()
         else:
-            self.login()
+            self.log_in()
 
     def register(self):
+        self.clear_everything()
+        print("\t\tRegister part\n")
         us_name = input("Enter your name: ").strip().capitalize()
         while not us_name.isalpha() or self.is_empty(us_name):
             self.clear_everything()
@@ -49,11 +52,12 @@ class Project:
             us_age = input("Enter your age: ").strip()
 
         us_login = input("Enter your login [nickname]: ").strip().lower()
-        while not us_login.isalnum() or self.is_empty(us_login):
+        while not us_login.isalnum() or self.is_empty(us_login) or self.is_exists_in_database(us_login):
             self.clear_everything()
             print("""Invalid input. Possible errors: 
                         -> input doesn't consists of only letters and numbers
-                        -> input an empty""")
+                        -> input an empty
+                        -> this login is already taken""")
             us_login = input("Enter your login [nickname]: ").strip().lower()
 
         us_password = input("Enter your password: ").strip()
@@ -69,17 +73,48 @@ class Project:
         self.login = us_login
         self.password = us_password
         self.save_to_database()
-
-
+        self.enterance()
 
     def log_in(self):
-        pass
+        self.clear_everything()
+        login = input("Input your login: ").strip().lower()
+        while not login.isalnum() or self.is_empty(login) or not self.is_exists_in_database(login):
+            self.clear_everything()
+            print("""Invalid input. Possible errors:
+                        -> input doesn't consists of only letters and numbers
+                        -> input an empty""")
+            print("Maybe you haven't registered yet. Do you wanna register? ")
+            y_or_n = input(">>> ").strip().lower()
+            options2 = ['y', 'n', 'yes', 'no']
+            while y_or_n not in options2:
+                self.clear_everything()
+                print("Invalid input. Try again [y/n]: ")
+                y_or_n = input(">>> ").strip().lower()
+            if y_or_n == options2[0] or y_or_n == options2[2]:
+                self.register()
+            else:
+                self.log_in()
+                break
+
+        self.second_msg()
+        options3 = ['1','2','3']
+        new_msg = input(">>> ").strip()
+        while new_msg not in options3:
+            self.clear_everything()
+            print("Invalid input. You can only enter [1,2]")
+            new_msg = input(">>> ").strip()
+        if new_msg == options3[0]:
+            self.update_login_password()
+        elif new_msg == options3[1]:
+            self.log_out()
+        else:
+            self.delete_profile()
 
     def update_login_password(self):
         pass
 
     def log_out(self):
-        pass
+        self.enterance()
 
     def delete_profile(self):
         pass
@@ -94,6 +129,13 @@ class Project:
         [2] -> Log in""")
 
     @staticmethod
+    def second_msg():
+        print("""You've successfully logged in!
+                  Menu: -> [1] Update login and password
+                        -> [2] Log out
+                        -> [3] Delete profile""")
+
+    @staticmethod
     def clear_everything():
         os.system("clear")
 
@@ -105,6 +147,16 @@ class Project:
         mycursor.execute(f"insert into login_pasword(name, age, login, password) values ('{self.name}', {self.age}, '{self.login}', '{self.password}')")
         my_db.commit()
 
+    @staticmethod
+    def is_exists_in_database(login):
+        mycursor.execute("select login from login_pasword")
+        logins = mycursor.fetchall()
+        for i in logins:
+            if login == i[0]:
+                return True
+        return False
+
 
 person = Project()
 person.enterance()
+
