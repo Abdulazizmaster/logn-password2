@@ -7,7 +7,6 @@ my_db = mysql.connector.connect(
     password='123123123',
     database='login_password2'
 )
-
 mycursor = my_db.cursor()
 
 
@@ -65,6 +64,13 @@ class Project:
                         -> input an empty""")
             us_password = input("Enter your password: ").strip()
 
+        self.name = us_name
+        self.age = us_age
+        self.login = us_login
+        self.password = us_password
+        self.save_to_database()
+
+
 
     def log_in(self):
         pass
@@ -94,6 +100,10 @@ class Project:
     @staticmethod
     def is_empty(str_):
         return not bool(str_)
+
+    def save_to_database(self):
+        mycursor.execute(f"insert into login_pasword(name, age, login, password) values ('{self.name}', {self.age}, '{self.login}', '{self.password}')")
+        my_db.commit()
 
 
 person = Project()
