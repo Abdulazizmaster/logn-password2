@@ -33,7 +33,38 @@ class Project:
             self.login()
 
     def register(self):
-        pass
+        us_name = input("Enter your name: ").strip().capitalize()
+        while not us_name.isalpha() or self.is_empty(us_name):
+            self.clear_everything()
+            print("""Invalid input. Possible errors: 
+            -> input doesn't consists of only letters
+            -> input an empty""")
+            us_name = input("Enter your name: ").strip().capitalize()
+
+        us_age = input("Enter your age: ").strip()
+        while not us_age.isnumeric() or self.is_empty(us_age):
+            self.clear_everything()
+            print("""Invalid input. Possible errors: 
+                        -> input doesn't consists of only numbers
+                        -> input an empty""")
+            us_age = input("Enter your age: ").strip()
+
+        us_login = input("Enter your login [nickname]: ").strip().lower()
+        while not us_login.isalnum() or self.is_empty(us_login):
+            self.clear_everything()
+            print("""Invalid input. Possible errors: 
+                        -> input doesn't consists of only letters and numbers
+                        -> input an empty""")
+            us_login = input("Enter your login [nickname]: ").strip().lower()
+
+        us_password = input("Enter your password: ").strip()
+        while not us_password.isalnum() or self.is_empty(us_password):
+            self.clear_everything()
+            print("""Invalid input. Possible errors: 
+                        -> input doesn't consists of only letters and numbers
+                        -> input an empty""")
+            us_password = input("Enter your password: ").strip()
+
 
     def log_in(self):
         pass
@@ -59,6 +90,10 @@ class Project:
     @staticmethod
     def clear_everything():
         os.system("clear")
+
+    @staticmethod
+    def is_empty(str_):
+        return not bool(str_)
 
 
 person = Project()
