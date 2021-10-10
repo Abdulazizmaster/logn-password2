@@ -1,4 +1,5 @@
 import mysql.connector
+import os
 
 my_db = mysql.connector.connect(
     host='localhost',
@@ -17,7 +18,21 @@ class Project:
         self.login = None
         self.password = None
 
-    def register:
+    def enterance(self):
+        self.first_msg()
+        enter_ = input(">>> ").strip()
+        options = ['1','2']
+        while enter_ not in options:
+            self.clear_everything()
+            print("Invalid input. You can only enter [1,2,3,4]")
+            enter_ = input(">>> ").strip()
+
+        if enter_ == options[0]:
+            self.register()
+        else:
+            self.login()
+
+    def register(self):
         pass
 
     def log_in(self):
@@ -32,3 +47,19 @@ class Project:
     def delete_profile(self):
         pass
 
+    @staticmethod
+    def first_msg():
+        print("""
+             Welcome!
+        
+        What do you want to do:
+        [1] -> Register
+        [2] -> Log in""")
+
+    @staticmethod
+    def clear_everything():
+        os.system("clear")
+
+
+person = Project()
+person.enterance()
